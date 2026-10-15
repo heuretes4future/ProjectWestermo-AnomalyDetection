@@ -1,0 +1,47 @@
+version: "3.9"
+
+services:
+  server:
+    build: ./central_server
+    container_name: fl_server
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./saved_result:/app/saved_result
+      - ./central_server/server_config.json:/app/server_config.json
+    networks:
+      - flnet
+
+  client_bottom:
+    build: ./clients/client-bottom
+    container_name: fl_client_bottom
+    depends_on:
+      - server
+    volumes:
+      - ./clients/client-bottom/client_config.json:/app/client_config.json
+    networks:
+      - flnet
+
+  client_left:
+    build: ./clients/client-left
+    container_name: fl_client_left
+    depends_on:
+      - server
+    volumes:
+      - ./clients/client-left/client_config.json:/app/client_config.json
+    networks:
+      - flnet
+
+  client_right:
+    build: ./clients/client-right
+    container_name: fl_client_right
+    depends_on:
+      - server
+    volumes:
+      - ./clients/client-right/client_config.json:/app/client_config.json
+    networks:
+      - flnet
+
+networks:
+  flnet:
+    driver: bridge
